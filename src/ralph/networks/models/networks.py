@@ -544,7 +544,8 @@ class IPAddress(
         else:
             self.number = int(ipaddress.ip_address(self.address or 0))
         self._assign_parent()
-        self.is_public = not self.ip.is_private
+        if self.ip:
+            self.is_public = not self.ip.is_private
         # TODO: if not reserved, check for ethernet
         super(IPAddress, self).save(*args, **kwargs)
 
