@@ -68,11 +68,11 @@ class AssetModelResource(RalphModelResource):
         attribute='category',
         widget=ImportedForeignKeyWidget(assets.Category),
     )
-    assets_count = fields.Field(
-        readonly=True,
-        column_name='assets_count',
-        attribute='assets_count',
-    )
+    # assets_count = fields.Field(
+    #     readonly=True,
+    #     column_name='assets_count',
+    #     attribute='assets_count',
+    # )
 
     class Meta:
         model = assets.AssetModel
@@ -80,8 +80,8 @@ class AssetModelResource(RalphModelResource):
     def get_queryset(self):
         return assets.AssetModel.objects.annotate(assets_count=Count('assets'))
 
-    def dehydrate_assets_count(self, model):
-        return model.assets_count
+    # def dehydrate_assets_count(self, model):
+    #     return model.assets_count
 
 
 class CategoryResource(RalphModelResource):
@@ -411,11 +411,11 @@ class SupportResource(RalphModelResource):
         attribute='property_of',
         widget=ImportedForeignKeyWidget(assets.AssetHolder),
     )
-    assigned_objects_count = fields.Field(
-        readonly=True,
-        column_name='assigned_objects_count',
-        attribute='assigned_objects_count',
-    )
+    # assigned_objects_count = fields.Field(
+    #     readonly=True,
+    #     column_name='assigned_objects_count',
+    #     attribute='assigned_objects_count',
+    # )
 
     class Meta:
         model = Support
@@ -425,8 +425,8 @@ class SupportResource(RalphModelResource):
     def get_queryset(self):
         return Support.objects_with_related.all()
 
-    def dehydrate_assigned_objects_count(self, support):
-        return support.assigned_objects_count
+    # def dehydrate_assigned_objects_count(self, support):
+    #     return support.assigned_objects_count
 
     def dehydrate_price(self, support):
         return str(support.price)
