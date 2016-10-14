@@ -550,7 +550,7 @@ class IPAddress(
 
     @property
     def ip(self):
-        return ipaddress.ip_address(self.address)
+        return ipaddress.ip_address(self.address) if self.address else None
 
     @property
     def base_object(self):
@@ -574,6 +574,8 @@ class IPAddress(
         then by max_ip ascending, to get smallest ancestor network
         containing current network.
         """
+        if self.ip is None:
+            return []
         int_value = int(self.ip)
         nets = Network.objects.filter(
             min_ip__lte=int_value,
