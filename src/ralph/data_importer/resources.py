@@ -4,12 +4,13 @@ from django.db.models import Count
 from import_export import fields, resources, widgets
 
 from ralph.accounts.models import Region
-from ralph.assets.models import assets, base, configuration
+from ralph.assets.models import assets, base, configuration, Ethernet
 from ralph.back_office.models import (
     BackOfficeAsset,
     OfficeInfrastructure,
     Warehouse
 )
+
 from ralph.data_center.models import physical
 from ralph.data_importer.fields import ThroughField
 from ralph.data_importer.mixins import (
@@ -219,9 +220,15 @@ class NetworkResource(RalphModelResource):
         exclude = ('gateway_as_int', 'min_ip', 'max_ip')
 
 
-class IPAddressResource(RalphModelResource):
+class FieldForEthernet(fields.Field):
+    def save(self, obj, data):
+        _, base_object_id = data['asset'].split("|")
+        obj.ethernet = Ethernet.objects.create(base_object_id=base_object_id)
+        super().save(obj, data)
 
-    base_object = fields.Field(
+
+class IPAddressResource(RalphModelResource):
+    base_object = FieldForEthernet(
         column_name='asset',
         attribute='base_object',
         widget=BaseObjectWidget(assets.BaseObject),
@@ -231,6 +238,11 @@ class IPAddressResource(RalphModelResource):
         column_name='network',
         attribute='network',
         widget=ImportedForeignKeyWidget(networks.Network),
+    )
+
+    address = fields.Field(
+        column_name='address',
+        attribute='address',
     )
 
     class Meta:
