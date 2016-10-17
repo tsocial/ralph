@@ -222,8 +222,13 @@ class NetworkResource(RalphModelResource):
 
 class FieldForEthernet(fields.Field):
     def save(self, obj, data):
-        _, base_object_id = data['asset'].split("|")
-        obj.ethernet = Ethernet.objects.create(base_object_id=base_object_id)
+        try:
+            _, base_object_id = data['asset'].split("|")
+            obj.ethernet = Ethernet.objects.create(
+                base_object_id=base_object_id
+            )
+        except ValueError:
+            pass
         super().save(obj, data)
 
 
