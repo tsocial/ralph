@@ -222,14 +222,23 @@ class NetworkResource(RalphModelResource):
 
 class FieldForEthernet(fields.Field):
     def save(self, obj, data):
+        base_object_id = None
         try:
             _, base_object_id = data['asset'].split("|")
-            obj.ethernet = Ethernet.objects.create(
-                base_object_id=base_object_id
-            )
         except ValueError:
             pass
-        super().save(obj, data)
+        else:
+            if not base_object_id:
+                return
+            try:
+                bo = assets.BaseObject.objects.get(id=base_object_id)
+                eth = Ethernet.objects.create(
+                    base_object=bo
+                )
+                obj.ethernet = eth
+            except assets.BaseObject.DoesNotExist:
+                pass
+            pass
 
 
 class IPAddressResource(RalphModelResource):
@@ -239,11 +248,11 @@ class IPAddressResource(RalphModelResource):
         widget=BaseObjectWidget(assets.BaseObject),
     )
 
-    network = fields.Field(
-        column_name='network',
-        attribute='network',
-        widget=ImportedForeignKeyWidget(networks.Network),
-    )
+    # network = fields.Field(
+    #     column_name='network',
+    #     attribute='network',
+    #     widget=ImportedForeignKeyWidget(networks.Network),
+    # )
 
     address = fields.Field(
         column_name='address',
@@ -252,9 +261,12 @@ class IPAddressResource(RalphModelResource):
 
     class Meta:
         model = networks.IPAddress
+        exclude = ('network',)
 
     def skip_row(self, instance, original):
         if settings.MAP_IMPORTED_ID_TO_NEW_ID:
+            if not instance.ethernet or not instance.ethernet.base_object:
+                return True
             try:
                 networks.IPAddress.objects.get(address=instance.address)
             except networks.IPAddress.DoesNotExist:
