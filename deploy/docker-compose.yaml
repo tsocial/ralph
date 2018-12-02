@@ -1,5 +1,5 @@
 nginx:
-  image: trustingsocial/ralph-static
+  image: tsl8/ralph-static
   ports:
     - 8090:8090
   volumes:
@@ -8,7 +8,7 @@ nginx:
     - ralph:ralph
   command: /bin/bash -c "exec nginx -g 'daemon off;'"
 ralph:
-  image: trustingsocial/ralph
+  image: tsl8/ralph
   ports:
     - 8000:8000
   env_file:
