@@ -22,6 +22,9 @@ js-hint:
 install: install-js
 	pip3 install -r requirements/prod.txt
 
+install-prod:
+	pip3 install -r requirements/prod.txt
+
 install-test:
 	pip3 install -r requirements/test.txt
 
