@@ -1,0 +1,17 @@
+nginx:
+  image: trustingsocial/ralph-static
+  ports:
+    - 8090:8090
+  volumes:
+    - ./ralph.conf.nginx:/etc/nginx/conf.d/default.conf
+  links:
+    - ralph:ralph
+  command: /bin/bash -c "exec nginx -g 'daemon off;'"
+ralph:
+  image: trustingsocial/ralph
+  ports:
+    - 8000:8000
+  env_file:
+    - ralph.env
+  command: gunicorn -w 4 -b 0.0.0.0:8000 -t 300 ralph.wsgi
+  tty: true
