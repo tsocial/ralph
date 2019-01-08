@@ -42,8 +42,7 @@ RUN make install-prod
 ADD src/ralph/admin/static $RALPH_DIR/src/ralph/admin/static
 ADD src/ralph/static $RALPH_DIR/src/ralph/static
 ADD src/ralph/admin/static/elements $RALPH_DIR/static/elements
-ADD src/ralph/lib/table/static/js/admin-table.js $RALPH_DIR/src/ralph/static/js/
-ADD src/ralph/admin/static/auto-complete-helpers.js $RALPH_DIR/src/ralph/static/
+ADD src/ralph/lib/table/static/js/admin-table.js $RALPH_DIR/src/ralph/static/js/admin-table.js
 ADD gulpfile.js bower.json package.json $RALPH_DIR/
 RUN $SCRIPTS_PATH/init_js.sh
 
@@ -56,5 +55,8 @@ FROM nginx as final
 COPY --from=base /opt/ralph/src/ralph/static /usr/share/nginx/static
 COPY --from=base /usr/local/lib/python3.6/dist-packages/django/contrib/admin/static/admin /usr/share/nginx/static/admin
 COPY --from=base /opt/ralph/src/ralph/admin/static /usr/share/nginx/admin/static
+COPY --from=base /opt/ralph/src/ralph/admin/static/elements /usr/share/nginx/static/elements
+COPY --from=base /opt/ralph/src/ralph/admin/static/auto-complete-helpers.js /usr/share/nginx/static/auto-complete-helpers.js
+ADD src/ralph/lib/table/static/js/admin-table.js $RALPH_DIR/src/ralph/static/js/admin-table.js
 
 CMD gunicorn -w 4 -b 0.0.0.0:8000 -t 300 ralph.wsgi
