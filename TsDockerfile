@@ -42,6 +42,7 @@ RUN make install-prod
 ADD src/ralph/admin/static $RALPH_DIR/src/ralph/admin/static
 ADD src/ralph/static $RALPH_DIR/src/ralph/static
 ADD src/ralph/admin/static/elements $RALPH_DIR/static/elements
+ADD src/ralph/dc_view/static $RALPH_DIR/src/ralph/static
 ADD src/ralph/lib/table/static/js/admin-table.js $RALPH_DIR/src/ralph/static/js/admin-table.js
 ADD gulpfile.js bower.json package.json $RALPH_DIR/
 RUN $SCRIPTS_PATH/init_js.sh
